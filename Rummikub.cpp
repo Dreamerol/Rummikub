@@ -111,6 +111,7 @@ void dealing_tile_from_deck(Tile* allTiles, Tile& t) {
     }
 
 }
+
 void initializePlayers(Player* players, int n, Tile* allTiles) {
     for (int i = 0;i < n;i++) {
         players[i].ID = i + 1;
@@ -138,7 +139,6 @@ void printHandOfPlayer(Player* players, int idx) {
     std::cout << '\n';
 }
 void printHandOfPlayerHelper(Player& player) {
-    //std::cout << player.number_in_hand << ' ';
     std::cout << "ID: " << player.ID << '\n';
     for (int j = 0;j < player.number_in_hand;j++) {
         printColourful(player.tiles[j]);
@@ -162,6 +162,7 @@ int calculateSum(Tile* tiles, int m) {
     }
     return sum;
 }
+//claculating and returning the idx of the player with the least score
 int calculating_the_winner(Player* players, int n) {
     int minValue = 1e9;
     int minIdx = -1;
@@ -303,6 +304,7 @@ void SelectionSortTilesPassedTiles(Tile* playerTile, int size) {
         }
     }
 }
+//functions to check whether the combination is valid
 bool sameColor(int* indxs, int k, Player& player) {
     /*  Tile* currentTiles = new Tile[k];
       for (int i = 0;i < k;i++) {
@@ -322,8 +324,6 @@ bool sameColor(int* indxs, int k, Player& player) {
     return true;
 }
 bool sameColorPassedTiles(int k, Tile* tiles, Player& player) {
-
-
     SelectionSortTilesPassedTiles(player.tiles, k);
     for (int i = 1;i < k;i++) {
         if (player.tiles[i - 1].number + 1 != player.tiles[i].number
@@ -422,13 +422,15 @@ void printDeck(Deck& d) {
     std::cout << "-----------------------------------------------------------------" << '\n';
 
 }
+//function when a player deals tile
 void dealingTile(Tile* allTiles, Player& player) {
     Tile tile;
     dealing_tile_from_deck(allTiles, tile);
     addTile(tile, player);
 }
 //----------------------------------------------------------------
-//first move
+//first move functions
+//getting the Indxs of the tiles that the player wants to add
 void gettingIdxs(int k, Player& player, int* indxs) {
     for (int j = 0;j < k;j++) {
         int idx;
@@ -437,6 +439,7 @@ void gettingIdxs(int k, Player& player, int* indxs) {
         indxs[j] = idx;
     }
 }
+//creating and checking the combinations
 void gettingEachCombination(int* indxs, Player& player, int k, int& y1, Tile** finalCards, int* sizes, int& sum) {
     if (sameColor(indxs, k, player) || sameNumbers(k, player, indxs)) {
         Tile* cards = new Tile[k];
@@ -454,21 +457,23 @@ void gettingEachCombination(int* indxs, Player& player, int k, int& y1, Tile** f
     else {
 
         std::cout << "Invalid combination!" << '\n';
-        //std::cout<<"You cannot "
 
     }
 }
 
 void moveOfPlayerFirstMove(Player& player, Tile* allTiles, Deck& d);
 void moveOfPlayerInTheGame(Player& player, Tile* allTiles, Deck& d);
+//checking for valid first move
 void checkingStartingTileCombinationSum(int& sum, Player& player, Tile** finalCards, int* sizes, Deck& d, int& y1, Tile* allTiles) {
 
     if (sum >= 30) {
-        //std::cout << player.number_in_hand;
+  
         for (int u = 0;u < y1;u++) {
             for (int h = 0;h < sizes[u];h++) {
+                //we remove the tiles that we want to add to the deck
                 removeTile(player, finalCards[u][h]);
             }
+            //we add the combination to the deck
             addCombinationToDeck(d, finalCards[u], sizes[u]);
         }
         printHandOfPlayerHelper(player);
@@ -476,6 +481,7 @@ void checkingStartingTileCombinationSum(int& sum, Player& player, Tile** finalCa
     }
     else {
         std::cout << "Invalid game move! You can deal or try again to make combination!" << '\n';
+        //if the move was invalid we return to the beggining
         moveOfPlayerFirstMove(player, allTiles, d);
 
     }
@@ -485,22 +491,19 @@ void gettingCombinationInGame(int* indxs, Player& player, int k, Tile* cards, De
 
         for (int j = 0;j < k;j++) {
             cards[j] = player.tiles[indxs[j]];
-
         }
-
     }
     else {
-
         std::cout << "Invalid combination!" << '\n';
-        //std::cout<<"You cannot "
         moveOfPlayerInTheGame(player, allTiles, d);
     }
 }
-
+//the realiation of the logic of first move
 void moveOfPlayerFirstMove(Player& player, Tile* allTiles, Deck& d)
 {
     std::cout << "Move of player " << player.ID << '\n';
     printHandOfPlayerHelper(player);
+    //if the player answers true - he deals tile
     if (Move()) {
         dealingTile(allTiles, player);
     }
@@ -523,14 +526,22 @@ void moveOfPlayerFirstMove(Player& player, Tile* allTiles, Deck& d)
 
             gettingIdxs(k, player, indxs);
             gettingEachCombination(indxs, player, k, y1, finalCards, sizes, sum);
+            delete[] indxs;
             
         }
         checkingStartingTileCombinationSum(sum, player, finalCards, sizes, d, y1, allTiles);
+        delete[] sizes;
+        for (int i = 0;i < combs;i++) {
+            delete[] finalCards[i];
+        }
+        delete[] finalCards;
+        
         
     }
 
 }
-//game
+//game - functions
+//Here we have two moves - c - combinations and r - rearrangement
 void validateMove(char& move, char* moves, int len) {
 
     while (true) {
@@ -548,6 +559,7 @@ void validateMove(char& move, char* moves, int len) {
         else break;
     }
 }
+//a function to remove the added tiles to the deck from our hand
 void updateDeck(Tile* cards, Player& player, Deck& d, int k) {
     for (int h = 0;h < k;h++) {
         removeTile(player, cards[h]);
@@ -555,10 +567,12 @@ void updateDeck(Tile* cards, Player& player, Deck& d, int k) {
     addCombinationToDeck(d, cards, k);
 
 }
+//validating the coordinates of x and y when putting a tile
 bool validCoordsTilePuttingInDeck(int& x, int& y, Deck& d,Tile& tile) {
     if (y == 0 && d.deck[x][y + 1].color == tile.color && d.deck[x][y + 1].number == tile.number + 1) return true;
     if (y == d.sizes[x] && d.deck[x][y - 1].color == tile.color && d.deck[x][y - 1].number == tile.number - 1) return true;
 
+    //it must be in the same color as the other ones in the row and sequential or it must be the same number but different color
     if (y == 0 && d.deck[x][y + 1].color != tile.color && d.deck[x][y + 1].number == tile.number) return true;
     if (y == d.sizes[x] && d.deck[x][y - 1].color != tile.color && d.deck[x][y - 1].number == tile.number) return true;
     if (x < 0 || x > d.count) return false;
@@ -570,6 +584,8 @@ bool validCoordsTileGettingInDeck(int& x, int& y, Deck& d, Tile& tile) {
    
     if (x < 0 || x > d.count - 1) return false;
     else if (y < 0 || y > d.sizes[x] - 1)return false;
+    //here the logic is if we want to remove a tile it musn't remain other two subrows of tiles with len < 3
+    //for example we cant remove 3 from 1 2 3 4 5 cause we will get 1 2 and 3 4
     if (d.sizes[x] < 4) return false;
     else if (y > 0 && y < 3) return false;
     else if (y == 0) return true;
@@ -577,7 +593,7 @@ bool validCoordsTileGettingInDeck(int& x, int& y, Deck& d, Tile& tile) {
 
     return true;
 }
-
+//a high-order function for the different validation functions
 void validateOperationOnDeck(int& x, int& y, Tile& tile, Deck& d, bool (*func)(int& , int& , Deck& ,Tile&)) {
     
     while (true) {
@@ -587,6 +603,7 @@ void validateOperationOnDeck(int& x, int& y, Tile& tile, Deck& d, bool (*func)(i
         std::cin >> x >> y;
     }
 }
+//getting the objects behind those coordinates
 Tile getTileFromDeck(int x, int y, Deck& d) {
     return d.deck[x][y];
 }
@@ -625,7 +642,8 @@ void validateGettingDec(int& dec) {
         std::cin >> dec;
     }
 }
-//functions for move lo
+//functions for moves in the game
+//here is the logic for ptting one tile
 void puttingOnlyOneTile(Player& player, Deck& d) {
     std::cout << "Enter the idx of the tile you want to put ";
     int numberOfTile;
@@ -641,7 +659,7 @@ void puttingOnlyOneTile(Player& player, Deck& d) {
     addTileToDeck(x, y, d, tile);
     removeTile(player, tile);
 }
-
+//here is the logic for putting many tiles
 void puttingManyTiles(int& numberGotTiles1, int& numberGotTiles2,Player& player, int*& lines, Deck& d, Tile*& finalCards) {
     if (numberGotTiles1 + numberGotTiles2 == 0) {
         /* std::cout << numberGotTiles1 << ' ' << numberGotTiles2 << '\n';*/
@@ -665,6 +683,7 @@ void puttingManyTiles(int& numberGotTiles1, int& numberGotTiles2,Player& player,
 
     }
 }
+//thw function for making combinations
 void CombinationLogicFunc(Player& player, Deck& d, Tile*& allTiles) {
     std::cout << "How many combinations will you make? ";
     int combs;
@@ -688,6 +707,7 @@ void CombinationLogicFunc(Player& player, Deck& d, Tile*& allTiles) {
     }
 
 }
+//combining all the dealed from the deck tiles - all the tiles we got
 void createFinalCardsToAddToDeck(Tile*& finalCards, int& numberGotTiles1, int& numberGotTiles2, Tile*& gotTilesDeck, Tile*& gotTilesHand) {
     std::cout << "Are you putting one or many cards! Enter 0 - many and 1 - one " << '\n';
     std::cout << numberGotTiles1 << ' ' << numberGotTiles2 << '\n';
@@ -701,7 +721,7 @@ void createFinalCardsToAddToDeck(Tile*& finalCards, int& numberGotTiles1, int& n
         finalCards[j++] = gotTilesHand[i];
     }
 }
-
+//a function to get from the deck by coordinates
 void gettingFromDeckfunc(int& numberGotTiles1,Tile*& gotTilesDeck, int*& lines, Deck& d) {
     std::cout << "How many will you get? ";
 
@@ -744,7 +764,7 @@ void validationChoosingMove(char& move) {
     moves[1] = 'r';
     validateMove(move, moves, 2);
 }
-
+//the function implementing the rearrange logic
 void rearrangeFunctionLogic(Player& player, Deck& d){
     std::cout << "How many commands will you write? ";
     int l;
@@ -784,10 +804,15 @@ void rearrangeFunctionLogic(Player& player, Deck& d){
             validateGettingDec(dec);
             if (dec == 0) puttingManyTiles(numberGotTiles1, numberGotTiles2, player, lines, d, finalCards);
             else puttingOnlyOneTile(player, d);
+            delete[] finalCards;
         }
     }
+    delete[] lines;
+    delete[] gotTilesDeck;
+    delete[] gotTilesHand;
+    
 }
-
+//the actual function for the moves of the gamers
 void moveOfPlayerInTheGame(Player& player, Tile* allTiles, Deck& d)
 {
 
@@ -820,6 +845,7 @@ void moveOfPlayerInTheGame(Player& player, Tile* allTiles, Deck& d)
     }
 
 }
+//if all the tiles are dealed we get the idx of he player with the least score
 bool checkingForWinner(Tile* allTiles, Player* players, int n) {
     if (allTilesDealed(allTiles)) {
         int idxWinner = calculating_the_winner(players, n);
@@ -828,6 +854,7 @@ bool checkingForWinner(Tile* allTiles, Player* players, int n) {
     }
 
 }
+//another way to check for a winner if he has no tiles left
 bool isWinner(Player& player) {
     return player.number_in_hand == 0;
 }
@@ -856,6 +883,7 @@ int main()
         printHandOfPlayer(players, i);
     }*/
 
+    //the logic is a bit different for first and second move so that's why we use flag firstMove
     bool firstMove = true;
     Deck d;
     d.sizes = nullptr;
@@ -871,7 +899,9 @@ int main()
         }
         firstMove = false;
         if (checkingForWinner(allTiles, players, n)) break;
+        //checking for no tiles
         for (int i = 0;i < n;i++) {
+            //on each move we check if the player has already used his tiles
             if (isWinner(players[i])) {
                 std::cout << "The winner is player " << players[i].ID << '\n';
                 break;
