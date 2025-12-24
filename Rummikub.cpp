@@ -1,3 +1,4 @@
+//This was the first version of the project - without orginizing the code into files
 // Rummikub.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <Windows.h>
