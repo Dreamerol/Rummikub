@@ -110,7 +110,7 @@ void gettingFromDeckfunc(int& numberGotTiles1, Tile*& gotTilesDeck, int*& lines,
 
 
 
-        lines[i] = y;
+        lines[i] = x;
     }
 }
 void gettingTilesFromHandfunc(int& numberGotTiles2, Player& player, Tile*& gotTilesHand) {
