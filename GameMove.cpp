@@ -1,5 +1,16 @@
-//Here are the functions realizing the logic for the different main game moves - making combinations, rearranging the deck
+/**
+*
+* Solution to course project # <7>
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2025/2026
+*
+* @author <Mihaela Koseva>
+* @idnumber <6MI0600443>
+* @compiler <VC>
+*/
 #include "GameMove.h"
+
 //functions for moves in the game
 //here is the logic for ptting one tile
 void puttingOnlyOneTile(Player& player, Deck& d) {
@@ -25,9 +36,9 @@ void puttingManyTiles(int& numberGotTiles1, int& numberGotTiles2, Player& player
         return;
     }
     int allCards = numberGotTiles1 + numberGotTiles2;
-    if (sameNumbersPassedTiles(allCards, finalCards) || sameColorPassedTiles(allCards, finalCards, player)) {
+    if (sameNumbersPassedTiles(allCards, finalCards) || sameColorPassedTilesPuttingFunction(allCards, finalCards)) {
 
-        addCombinationToDeck(d, finalCards, allCards);
+        
 
         for (int i = 0;i < numberGotTiles1;i++) {
 
@@ -37,6 +48,7 @@ void puttingManyTiles(int& numberGotTiles1, int& numberGotTiles2, Player& player
         for (int j = numberGotTiles1;j < allCards;j++) {
             removeTile(player, finalCards[j]);
         }
+        addCombinationToDeck(d, finalCards, allCards);
         // printHandOfPlayerHelper(player);
 
     }
@@ -67,17 +79,19 @@ void CombinationLogicFunc(Player& player, Deck& d, Tile*& allTiles) {
 }
 //combining all the dealed from the deck tiles - all the tiles we got
 void createFinalCardsToAddToDeck(Tile*& finalCards, int& numberGotTiles1, int& numberGotTiles2, Tile*& gotTilesDeck, Tile*& gotTilesHand) {
-    std::cout << "Are you putting one or many cards! Enter 0 - many and 1 - one " << '\n';
-    std::cout << numberGotTiles1 << ' ' << numberGotTiles2 << '\n';
+    
+  
     int allCards = numberGotTiles1 + numberGotTiles2;
     finalCards = new Tile[numberGotTiles1 + numberGotTiles2];
     int j = 0;
     for (int i = 0;i < numberGotTiles1;i++) {
         finalCards[j++] = gotTilesDeck[i];
+       
     }
     for (int i = 0;i < numberGotTiles2;i++) {
         finalCards[j++] = gotTilesHand[i];
     }
+   
 }
 //a function to get from the deck by coordinates
 void gettingFromDeckfunc(int& numberGotTiles1, Tile*& gotTilesDeck, int*& lines, Deck& d) {
@@ -96,7 +110,7 @@ void gettingFromDeckfunc(int& numberGotTiles1, Tile*& gotTilesDeck, int*& lines,
 
 
 
-        lines[i] = x;
+        lines[i] = y;
     }
 }
 void gettingTilesFromHandfunc(int& numberGotTiles2, Player& player, Tile*& gotTilesHand) {
@@ -149,11 +163,16 @@ void rearrangeFunctionLogic(Player& player, Deck& d) {
         }
         else if (comm == 'p') {
             Tile* finalCards = nullptr;
+            std::cout << "Are you putting one or many cards! Enter 0 - many and 1 - one " << '\n';
             createFinalCardsToAddToDeck(finalCards, numberGotTiles1, numberGotTiles2, gotTilesDeck, gotTilesHand);
             int dec;
             std::cin >> dec;
+            
             validateGettingDec(dec);
-            if (dec == 0) puttingManyTiles(numberGotTiles1, numberGotTiles2, player, lines, d, finalCards);
+            if (dec == 0) {
+             
+                puttingManyTiles(numberGotTiles1, numberGotTiles2, player, lines, d, finalCards);
+            }
             else puttingOnlyOneTile(player, d);
             delete[] finalCards;
         }
