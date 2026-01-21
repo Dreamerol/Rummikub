@@ -1,6 +1,18 @@
+/**
+*
+* Solution to course project # <7>
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2025/2026
+*
+* @author <Mihaela Koseva>
+* @idnumber <6MI0600443>
+* @compiler <VC>
+*/
 #pragma once
 #include "Factory.h"
 #include "Validators.h"
+
 bool Move();
 void addTile(Tile tile, Player& player);
 void removeTileByIdx(Tile* tiles, int idx, Player& player);
@@ -26,3 +38,4 @@ void removeTileFromDeck(int row, Tile& tile, Deck& d);
 void gettingCombinationInGame(int* indxs, Player& player, int k, Tile* cards, Deck& d, Tile* allTiles);
 void updateDeck(Tile* cards, Player& player, Deck& d, int k);
 void gettingIdxs(int k, Player& player, int* indxs);
+bool sameColorPassedTilesPuttingFunction(int k, Tile* tiles);
