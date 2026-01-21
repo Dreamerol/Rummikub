@@ -1,4 +1,14 @@
-//These are the functions defining the operations on the tiles - adding a tile, removing a tile from a hand or a deck 
+/**
+*
+* Solution to course project # <7>
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2025/2026
+*
+* @author <Mihaela Koseva>
+* @idnumber <6MI0600443>
+* @compiler <VC>
+*/
 #include "TileOperations.h"
 //if the player enters an invalid number of players
 bool Move() {
@@ -142,6 +152,16 @@ bool sameColorPassedTiles(int k, Tile* tiles, Player& player) {
             && player.tiles[i - 1].number != 14 &&
             player.tiles[i].number != 14) return false;
         else if (player.tiles[i - 1].color != player.tiles[i].color) return false;
+    }
+    return true;
+}
+bool sameColorPassedTilesPuttingFunction(int k, Tile* tiles) {
+    SelectionSortTilesPassedTiles(tiles, k);
+    for (int i = 1;i < k;i++) {
+        if (tiles[i - 1].number + 1 != tiles[i].number
+            && tiles[i - 1].number != 14 &&
+            tiles[i].number != 14) return false;
+        else if (tiles[i - 1].color != tiles[i].color) return false;
     }
     return true;
 }
