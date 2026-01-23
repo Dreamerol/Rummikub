@@ -115,6 +115,13 @@ void moveOfPlayerFirstMove(Player& player, Tile* allTiles, Deck& d)
     }
 
 }
+//void shuffleDeck(Tile* allTiles) {
+//    for (int i = ALL_TILES - 1;i > 0;i--) {
+//        int j = rand() % (i + 1);
+//        swapTiles(allTiles[i], allTiles[j]);
+//    }
+//}
+//if all the tiles are dealed we get the idx of he player with the least score
 //game - functions
 //Here we have two moves - c - combinations and r - rearrangement
 
